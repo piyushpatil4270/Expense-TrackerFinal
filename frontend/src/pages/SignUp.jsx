@@ -6,10 +6,12 @@ const SignUp = () => {
   const [pass,setPass]=useState("")
   const handleLogin=async()=>{
     try {
-        const res=await axios.post("http://localhost:5500/login",{email:email,password:pass})
+        const res=await axios.post("http://localhost:5500/auth/login",{email:email,password:pass})
         alert(res.data)
     } catch (error) {
-        console.log(error)
+       if(error.response && (error.response.status === 404))alert("Incorrect Password")
+       else if(error.response && (error.response.status === 401))alert("User doesnt exist") 
+
     }
   }
   return (

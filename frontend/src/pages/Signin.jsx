@@ -6,7 +6,7 @@ const Signin = () => {
     const [username,setUsername]=useState("")
     const hadnleSignIn=async()=>{
         try {
-            const res=await axios.post("http://localhost:5500/signup",{email:email,username:username,password:pass})
+            const res=await axios.post("http://localhost:5500/auth/signup",{email:email,username:username,password:pass})
             alert(res.data)
         } catch (error) {
             console.log(error)
@@ -31,8 +31,9 @@ const Signin = () => {
             <span className='flex-1 xs:text-[12px] sm:text-[15px]'>Password</span>
             <input className='w-[70%] border-0 border-cyan-400 border-b-[1px] outline-none'  onChange={(e)=>setPass(e.target.value)}/>
         </div>
-        <div className='w-auto xs:p-1 xs:m-1  sm:p-2 sm:m-2 gap-2 flex items-center justify-center'>
+        <div className='w-auto xs:p-1 xs:m-1  sm:p-2 sm:m-2 gap-8 flex items-center justify-center  '>
             <button className='text-[14px] bg-cyan-300 p-[4px] rounded-sm text-white' onClick={hadnleSignIn}>Sign-In</button>
+            <a href='/signin' className='border-0 border-b-[1px] text-[14px] p-1 border-blue-700'>Sign-up</a>
         </div>
    
     </div>

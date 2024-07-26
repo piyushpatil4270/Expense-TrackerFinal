@@ -16,7 +16,7 @@ function App() {
           </div>
         </>
       ) : (
-        <SignIn setIsAuthenticated={setIsAuth} />
+        <SignUp setIsAuthenticated={setIsAuth} />
       )}
     </div>
   );
