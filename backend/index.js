@@ -17,7 +17,7 @@ sequelize.sync()
 .catch((err)=>console.log(err))
 
 
-app.post("/signin",async(req,res,next)=>{
+app.post("/signup",async(req,res,next)=>{
    
     try {
         const body=req.body
@@ -34,6 +34,17 @@ app.post("/signin",async(req,res,next)=>{
         res.status(404).json(error)
     }
 
+})
+
+
+app.post("/login",async(req,res,next)=>{
+    const {email,password}=req.body
+    const user=await Users.findOne({where:{email:email}})
+    if(!user){
+        return res.status(200).json("Email doesnt exist")
+    }
+    if(user.password!==password) return res.status(201).json("Password is incorrect")
+    res.status(202).json("Login Successful")
 })
 
 
