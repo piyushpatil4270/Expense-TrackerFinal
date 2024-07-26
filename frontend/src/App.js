@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import SignIn from "./pages/Signin";
 import Main from "./pages/Daily";
 import SignUp from "./pages/SignUp";
+import {Routes,Route} from "react-router-dom"
 function App() {
   const [isAuth,setIsAuth]=useState(false)
   return (
@@ -12,11 +13,18 @@ function App() {
         <>
           <Navbar />
           <div className="flex-grow m-2 w-auto h-full bg-slate-100">
-            <Main />
+            <Routes>
+              <Route path="/" element={<Main />} />
+           
+            </Routes>
           </div>
         </>
       ) : (
-        <SignUp setIsAuthenticated={setIsAuth} />
+        <Routes>
+          <Route path="/" element={<SignUp setIsAuth={setIsAuth} />} />
+          <Route path="/signin" element={<SignIn />} />
+         
+        </Routes>
       )}
     </div>
   );

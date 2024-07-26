@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import axios from "axios"
 
-const SignUp = () => {
+const SignUp = ({setIsAuth}) => {
   const [email,setEmail]=useState("")
   const [pass,setPass]=useState("")
   const handleLogin=async()=>{
     try {
         const res=await axios.post("http://localhost:5500/auth/login",{email:email,password:pass})
         alert(res.data)
+        if(res.status===202)setIsAuth(true)
     } catch (error) {
        if(error.response && (error.response.status === 404))alert("Incorrect Password")
        else if(error.response && (error.response.status === 401))alert("User doesnt exist") 
