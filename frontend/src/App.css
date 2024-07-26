@@ -15,3 +15,8 @@
     top: 80%;
     left: 50%;
 }
+
+.hide-scrollbar {
+    overflow: hidden;
+  }
+  

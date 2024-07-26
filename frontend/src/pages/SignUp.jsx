@@ -7,7 +7,9 @@ const SignUp = ({setIsAuth}) => {
   const handleLogin=async()=>{
     try {
         const res=await axios.post("http://localhost:5500/auth/login",{email:email,password:pass})
-        alert(res.data)
+        console.log(res.data)
+        alert(res.data.msg)
+        localStorage.setItem('token',res.data.token)
         if(res.status===202)setIsAuth(true)
     } catch (error) {
        if(error.response && (error.response.status === 404))alert("Incorrect Password")
@@ -17,7 +19,7 @@ const SignUp = ({setIsAuth}) => {
   }
   return (
     <div className='w-full h-dvh bg-cyan-300 flex flex-col justify-center items-center'>
-    <div className='xs:w-[60%]  sm:w-[50%] bg-white flex flex-col  '>
+    <div className='xs:w-[60%]  sm:w-[40%] bg-white flex flex-col  '>
         <div className='xs:p-1 xs:m-1  sm:p-2 sm:m-2'>
             <span className='border-0 border-b-2 xs:text-[14px] sm:text-[16px] border-cyan-300 p-2'>SignIn</span>
         </div>

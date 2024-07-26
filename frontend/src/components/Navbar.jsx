@@ -2,7 +2,7 @@ import React from 'react'
 
 const Navbar = () => {
   return (
-    <div className='w-full xs:h-[75px] sm:h-[90px]  bg-[#47aeb0] flex flex-col items-center xs:gap-[2px] sm:gap-[10px]'>
+    <div className='w-full xs:h-[75px] sm:h-[90px]  bg-[#50bcbd] flex flex-col items-center xs:gap-[2px] sm:gap-[10px]'>
         <div className='w-full flex my-1 items-center justify-center '>
          <div className='w-[80%]'>
          <span className='text-white xs:text-[15px] sm:text-[16px]'>Day To Day Expenses</span>

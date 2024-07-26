@@ -8,7 +8,7 @@ import {Routes,Route} from "react-router-dom"
 function App() {
   const [isAuth,setIsAuth]=useState(false)
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen hide-scrollbar">
       {isAuth ? (
         <>
           <Navbar />

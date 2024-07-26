@@ -3,6 +3,14 @@ const Users=require("../models/Users")
 const bcrypt=require("bcrypt")
 const router=express.Router()
 const saltRounds=10
+const jwt=require("jsonwebtoken")
+
+
+function generateToken(id){
+    const token=jwt.sign({userId:id},'fskhkahkk88245fafjklakljfalk')
+    return token;
+}
+
 
 
 router.post("/signup",async(req,res,next)=>{
@@ -20,6 +28,7 @@ router.post("/signup",async(req,res,next)=>{
          email:body.email,
          password:hasdhedPass
         })
+  
         res.json("User created succesfully")
     } catch (error) {
         res.status(404).json(error)
@@ -28,15 +37,21 @@ router.post("/signup",async(req,res,next)=>{
 
 
 router.post("/login",async(req,res,next)=>{
-    const {email,password}=req.body
-    const user=await Users.findOne({where:{email:email}})
-    if(!user){
-        return res.status(401).json("Email doesnt exist")
+    try {
+        const {email,password}=req.body
+        const user=await Users.findOne({where:{email:email}})
+        if(!user){
+            return res.status(401).json("Email doesnt exist")
+        }
+    
+        const matched=await bcrypt.compare(password,user.password)
+        if(!matched) return res.status(404).json("Password is incorrect")
+        const token=generateToken(user.id)
+        res.status(202).json({msg:"Login Successful",token:token})
+    } catch (error) {
+        res.status(404).json(error)
     }
-
-    const matched=await bcrypt.compare(password,user.password)
-    if(!matched) return res.status(404).json("Password is incorrect")
-    res.status(202).json("Login Successful")
+   
 })
 
 
