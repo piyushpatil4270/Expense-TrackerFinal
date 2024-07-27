@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 
 const Payment_form = () => {
     const [formData,setFormdata]=useState({
         txnid:"",
         amount: '100',
-        productinfo: 'Premium Expense Feature',
+        productinfo: 'Premium',
         firstname: '',
         email: '',
         phone: ''
@@ -23,24 +24,20 @@ const Payment_form = () => {
                 body:JSON.stringify({...formData,txnid:'unique_transaction_id_' + new Date().getTime() })
             })
             const payUdata=await response.json()
-            const form=document.createElement("form")
-            try {
-                form.action='http://localhost:5500/payu_response'
-            form.method="POST"
-            Object.keys(payUdata).forEach(key=>{
-                const input=document.createElement("input")
-                input.type="hidden"
-                input.name=key
-                input.value=payUdata[key]
-                form.appendChild(input)
-            })
-            document.body.appendChild(form)
-            form.submit()
-            .then((res)=>{return res.json()})
-            .then((data)=>console.log("The data is ",data))
-            } catch (error) {
-                console.log(error)
+            const payUResponse = await axios.post('http://localhost:5500/payu_response', payUdata);
+            console.log("status",payUResponse.status)
+            if(payUResponse.status===200){
+              const userToken=localStorage.getItem("token")
+              const res=await axios.post("http://localhost:5500/premium/add",{},{headers:{"Authorization":userToken}})
+              if(res.status===202)alert("You are a premium user now")
+              else alert("Try again")
             }
+           else alert(`${payUResponse.data.message}`);
+
+            
+            
+
+            
             
         } catch (error) {
             console.log(error)
@@ -49,11 +46,11 @@ const Payment_form = () => {
     }
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+      <form onSubmit={handleSubmit} className="bg-white p-6  shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4 text-center">Pay with PayU</h2>
         
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="amount">
+          <label className="block text-gray-700 text-sm  mb-2" htmlFor="amount">
             Amount
           </label>
           <input
@@ -64,13 +61,13 @@ const Payment_form = () => {
             value={formData.amount}
 
             readOnly
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="w-full px-3 py-2 border border-gray-300  shadow-sm outline-none"
             required
           />
         </div>
         
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="productinfo">
+          <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="productinfo">
             Product Info
           </label>
           <input
@@ -81,13 +78,13 @@ const Payment_form = () => {
             value={formData.productinfo}
             readOnly
 
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="w-full px-3 py-2 border border-gray-300  shadow-sm focus:outline-none outline-none"
             required
           />
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="firstname">
+          <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="firstname">
             First Name
           </label>
           <input
@@ -97,13 +94,13 @@ const Payment_form = () => {
             placeholder="First Name"
             value={formData.firstname}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="w-full px-3 py-2 border border-gray-300  shadow-sm outline-none"
             required
           />
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+          <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="email">
             Email
           </label>
           <input
@@ -113,13 +110,13 @@ const Payment_form = () => {
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="w-full px-3 py-2 border border-gray-300  shadow-sm outline-none"
             required
           />
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="phone">
+          <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="phone">
             Phone
           </label>
           <input
@@ -129,14 +126,14 @@ const Payment_form = () => {
             placeholder="Phone"
             value={formData.phone}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="w-full px-3 py-2 border border-gray-300  outline-none"
             required
           />
         </div>
 
         <button
           type="submit"
-          className="w-full py-2 px-4 bg-green-500 text-white font-semibold rounded-md shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="w-full py-2 px-4 bg-green-500 text-white font-semibold rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 "
         >
           Pay with PayU
         </button>

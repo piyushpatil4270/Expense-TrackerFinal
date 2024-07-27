@@ -6,6 +6,7 @@ const AuthRouter = require("./routes/auth");
 const Users = require("./models/Users");
 const Expenses = require("./models/Expenses");
 const ExpenseRouter = require("./routes/expense");
+const PremiumRouter=require("../backend/routes/premium")
 const crypto = require("crypto");
 const bodyParser = require("body-parser");
 
@@ -37,6 +38,7 @@ function generateHash(key, txnid, amount, productinfo, firstname, email, salt) {
 app.post("/payu", async (req, res, next) => {
   try {
     const { txnid, amount, productinfo, firstname, email, phone } = req.body;
+    console.log(req.body)
     const hash = generateHash(key, txnid, amount, productinfo, firstname, email, salt);
     const payuData = {
       key: key,
@@ -52,7 +54,7 @@ app.post("/payu", async (req, res, next) => {
       service_provider: "payu_paisa",
     };
 
-    res.json(payuData);
+    res.status(200).json({...payuData,status:"success"});
   } catch (error) {
     console.error("Error in /payu endpoint:", error);
     res.status(500).json({ status: "failure", message: "Internal Server Error" });
@@ -62,16 +64,12 @@ app.post("/payu", async (req, res, next) => {
 app.post("/payu_response", (req, res) => {
   try {
     const { key, txnid, amount, productinfo, firstname, email, status, hash } = req.body;
-    
-    const hashString = `${salt}|${status}|||||||||||${email}|${firstname}|${productinfo}|${amount}|${txnid}|${key}`;
-
-    const newHash = crypto.createHash("sha512").update(hashString).digest("hex");
-    console.log(hashString,"  ",newHash)
-
+    console.log("url hitted")
+    const newHash = generateHash(key, txnid, amount, productinfo, firstname, email, salt);
     if (newHash === hash) {
-      res.json({ status: "success", message: "Payment Successful" });
+      res.status(200).json({ status: "success", message: "Payment Successful" });
     } else {
-      res.json({ status: "failure", message: "Payment Verification Failed" });
+      res.status(400).json({ status: "failure", message: "Payment Verification Failed" });
     }
   } catch (error) {
     console.error("Error in /payu_response endpoint:", error);
@@ -93,5 +91,6 @@ app.post("/failure", (req, res) => {
 });
 app.use("/auth", AuthRouter);
 app.use("/expense", ExpenseRouter);
+app.use("/premium",PremiumRouter)
 
 server.listen(5500, () => console.log("Server started on port 5500"));

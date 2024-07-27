@@ -16,10 +16,16 @@ const Users = sequelize.define("Users", {
     type:Sequelize.STRING,
     allowNull:false
   },
+  isPremium:{
+    type:Sequelize.BOOLEAN,
+    default:false
+  },
   password:{
     type:Sequelize.STRING,
     allowNull:false
   }
+},{
+  timestamps:false
 });
 
 module.exports=Users
