@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import "../App.css";
 import axios from "axios";
 
+import Daily_card from "../components/Daily_card";
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+
 const Income = () => {
   const [addExp, setaddExp] = useState(false);
   const [isExp, setIsExp] = useState(false);
@@ -10,6 +13,7 @@ const Income = () => {
   const [details, setDetails] = useState("");
   const [amount, setAmount] = useState("");
   const [data, setData] = useState([]);
+  const [showDesc,setShowdesc]=useState(false)
 
   const handleExpense = async () => {
     try {
@@ -36,12 +40,15 @@ const Income = () => {
   };
 
   const handleDelete = async (id) => {
-    const userToken=localStorage.getItem("token")
-    const res=await axios.post(`http://localhost:5500/expense/delete/${id}`,{}, {
-      headers: { Authorization: userToken },
-    },
-  )
-  fetchExpenses()
+    const userToken = localStorage.getItem("token");
+    const res = await axios.post(
+      `http://localhost:5500/expense/delete/${id}`,
+      {},
+      {
+        headers: { Authorization: userToken },
+      }
+    );
+    fetchExpenses();
   };
 
   const fetchExpenses = async () => {
@@ -75,19 +82,14 @@ const Income = () => {
           data?.map((expense) => {
             return (
               <div className="w-full flex justify-between ">
-                <span className="mx-2 text-black xs:text-[12px] sm:text-[15px]">
-                  {expense.title}
-                </span>
-                <div className="flex gap-5">
+                <Daily_card title={expense.title} description={expense.description} />
+
+                <div className="flex gap-5 items-center">
                   <span className="mx-2 text-black xs:text-[12px] sm:text-[15px]">
                     ${expense.amount}
                   </span>
-                  <button
-                    className="bg-red-600 text-white w-5 h-5 text-[10px] rounded-full"
-                    onClick={() => handleDelete(expense.id)}
-                  >
-                    X
-                  </button>
+                  <DeleteOutlineIcon  fontSize="5" style={{marginLeft:"8px",marginRight:'8px'}} onClick={() => handleDelete(expense.id)} />
+                  
                 </div>
               </div>
             );
@@ -95,20 +97,22 @@ const Income = () => {
         {}
       </div>
       {addExp && (
-        <div className="hide-scrollbar max-w-[90%] md:w-[50%] lg:w-[30%] rounded-sm gap-4 flex flex-col justify-center items-center bg-[#e5e4df] p-4 mx-auto relative">
+        <div className="hide-scrollbar max-w-[90%] md:w-[50%] lg:w-[30%] rounded-lg shadow-lg bg-white p-6 mx-auto relative">
           <button
-            className="absolute top-2 right-2 p-2 text-gray-500 hover:text-gray-700"
+            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
             onClick={() => setaddExp(false)}
           >
-            X
+            &times;
           </button>
-          <div className="w-full flex flex-col gap-4 items-center">
-            <div className="w-full flex items-center justify-around gap-5 p-3">
+          <div className="w-full flex flex-col gap-4">
+            <div className="w-full flex justify-around p-3 border-b">
               <div>
                 <span
-                  className={`px-2 py-[2px] border-0 text-[14px] ${
-                    isExp ? "border-cyan-400" : ""
-                  } border-b-[2px] cursor-pointer`}
+                  className={`px-3 py-1 border-b-2 ${
+                    isExp
+                      ? "border-cyan-500 text-cyan-500"
+                      : "border-transparent text-gray-500"
+                  } cursor-pointer`}
                   onClick={() => setIsExp(true)}
                 >
                   Expense
@@ -116,68 +120,65 @@ const Income = () => {
               </div>
               <div>
                 <span
-                  className={`px-2 py-[2px] text-[14px] border-0 ${
-                    !isExp ? "border-cyan-400" : ""
-                  } border-b-[2px] cursor-pointer`}
+                  className={`px-3 py-1 border-b-2 ${
+                    !isExp
+                      ? "border-cyan-500 text-cyan-500"
+                      : "border-transparent text-gray-500"
+                  } cursor-pointer`}
                   onClick={() => setIsExp(false)}
                 >
                   Income
                 </span>
               </div>
             </div>
-
-            <div className="w-full flex items-center justify-between gap-2">
-              <span className="w-[25%]  xs:text-[12px] sm:text-[14px] ">
-                Title
-              </span>
-              <input
-                className="flex-1 outline-none p-1 border border-gray-300 rounded-sm"
-                onChange={(e) => setTitle(e.target.value)}
-              />
+            <div className="w-full flex flex-col gap-4 mt-4">
+              <div className="flex items-center">
+                <span className="w-[25%] text-[14px] text-gray-700">Title</span>
+                <input
+                  className="flex-1 outline-none p-2 border border-gray-300 rounded-md"
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </div>
+              <div className="flex items-center">
+                <span className="w-[25%] text-[14px] text-gray-700">
+                  Details
+                </span>
+                <input
+                  className="flex-1 outline-none p-2 border border-gray-300 rounded-md"
+                  onChange={(e) => setDetails(e.target.value)}
+                />
+              </div>
+              <div className="flex items-center">
+                <span className="w-[25%] text-[14px] text-gray-700">
+                  Amount
+                </span>
+                <input
+                  type="number"
+                  min="0"
+                  step={1}
+                  className="flex-1 outline-none p-2 border border-gray-300 rounded-md"
+                  onChange={(e) => setAmount(e.target.value)}
+                />
+              </div>
+              <div className="flex items-center">
+                <span className="w-[25%] text-[14px] text-gray-700">
+                  Category
+                </span>
+                <select
+                  className="flex-1 outline-none p-2 border border-gray-300 rounded-md"
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  <option value="">Select Category</option>
+                  <option value="food">Food</option>
+                  <option value="transport">Transport</option>
+                  <option value="entertainment">Entertainment</option>
+                  <option value="utilities">Utilities</option>
+                </select>
+              </div>
             </div>
-
-            <div className="w-full flex items-center justify-between gap-2">
-              <span className="w-[25%]  xs:text-[12px] sm:text-[14px] ">
-                Details
-              </span>
-              <input
-                className="flex-1 outline-none p-1 border border-gray-300 rounded-sm"
-                onChange={(e) => setDetails(e.target.value)}
-              />
-            </div>
-
-            <div className="w-full flex items-center justify-between gap-2">
-              <span className="w-[25%]  xs:text-[12px] sm:text-[14px] ">
-                Amount
-              </span>
-              <input
-                type="number"
-                min="0"
-                step={1}
-                className="flex-1 outline-none p-1 border border-gray-300 rounded-sm"
-                onChange={(e) => setAmount(e.target.value)}
-              />
-            </div>
-
-            <div className="w-full flex items-center justify-between gap-2">
-              <span className="w-[25%]  xs:text-[12px] sm:text-[14px] ">
-                Category
-              </span>
-              <select
-                className="outline-none w-[75%] xs:text-[12px] sm:text-[14px] p-1 bg-white border border-gray-300 rounded-sm"
-                onChange={(e) => setCategory(e.target.value)}
-              >
-                <option value="">Select Category</option>
-                <option value="food">Food</option>
-                <option value="transport">Transport</option>
-                <option value="entertainment">Entertainment</option>
-                <option value="utilities">Utilities</option>
-              </select>
-            </div>
-
-            <div className="w-full flex items-center justify-center gap-2 mt-4">
+            <div className="w-full flex justify-center mt-4">
               <button
-                className="bg-cyan-300 w-fit px-4 py-2 text-[12px] rounded-md"
+                className="bg-cyan-500 text-white px-4 py-2 rounded-md"
                 onClick={handleExpense}
               >
                 Add

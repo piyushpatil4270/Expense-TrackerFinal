@@ -5,6 +5,9 @@ import SignIn from "./pages/Signin";
 import Main from "./pages/Daily";
 import SignUp from "./pages/SignUp";
 import {Routes,Route} from "react-router-dom"
+import Monthly from "./pages/Monthly";
+import Yearly from "./pages/Yearly";
+import Payment_form from "./components/Payment_form";
 function App() {
   const [isAuth,setIsAuth]=useState(false)
   return (
@@ -14,8 +17,10 @@ function App() {
           <Navbar />
           <div className="flex-grow m-2 w-auto h-full bg-slate-100">
             <Routes>
-              <Route path="/" element={<Main />} />
-           
+              <Route path="/daily" element={<Main />} />
+              <Route path="/monthly" element={<Monthly />} />
+              <Route path="/yearly" element={<Yearly />} />
+              <Route path="/premium" element={<Payment_form/>} />
             </Routes>
           </div>
         </>
@@ -23,6 +28,7 @@ function App() {
         <Routes>
           <Route path="/" element={<SignUp setIsAuth={setIsAuth} />} />
           <Route path="/signin" element={<SignIn />} />
+         
          
         </Routes>
       )}
