@@ -21,7 +21,7 @@ const Stats_Page = () => {
     <div className='w-full bg-[#ededed]'>
       {data.map((user)=>{
         return(
-            <Statistics user={user.email} expense={user.total_expense} />
+            <Statistics user={user.email} expense={user.totalExpenses} />
         )
       })}
     </div>

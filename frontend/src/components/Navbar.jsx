@@ -2,8 +2,8 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import {Link, useLocation} from "react-router-dom"
 
-const Navbar = () => {
-  const [isPremium,setPremium]=useState(false)
+const Navbar = ({isPremium,setPremium}) => {
+  
   const [loading,setLoading]=useState(false)
   const pathName=useLocation().pathname
   const checkUser=async()=>{
@@ -26,13 +26,13 @@ const Navbar = () => {
   
 
   return (
-    <div className='w-full xs:h-[90px] sm:h-[90px]  bg-[#50bcbd] flex flex-col items-center xs:gap-[2px] sm:gap-[4px]'>
-        <div className='w-full flex my-1 xs:p-2 items-center justify-center '>
-         <div className='w-[80%] '>
+    <div className='w-full xs:h-[90px] sm:h-[90px]  bg-[#50bcbd] flex flex-col items-center xs:gap-[4px] sm:gap-[4px]'>
+        <div className='w-full flex my-2   px-1  items-center justify-center '>
+         <div className='xs:w-[70%] sm:w-[70%] '>
          <span className='text-white xs:text-[15px] sm:text-[16px]'>Day To Day Expenses</span>
          </div>
          <div className='flex justify-center xs:gap-5 gap-6'>
-         <Link to={isPremium?pathName:"/premium"}><span className={`text-white xs:text-[12px] sm:text-[15px]`}>{loading?"...":isPremium?`Premium User`:`Upgrade to Premium`}</span></Link>
+         <Link to={isPremium?pathName:"/premium"}><span className={`text-white xs:text-[10px] sm:text-[13px]`}>{loading?"...":isPremium?`Premium User`:`Upgrade Premium`}</span></Link>
 
          </div>
         </div>
@@ -47,7 +47,7 @@ const Navbar = () => {
          <span className={`text-white xs:text-[13px] sm:text-[15px] border-0 ${pathName==='/yearly' && `xs:border-b-2 p-1 border-white`}`}>Yearly</span>
          </Link>
          <Link to={"/stats"}>
-          <span className={`text-white xs:text-[13px] sm:text-[15px] border-0 ${pathName==='/monthly' && `xs:border-b-2 p-1 border-white`} `}>Stats</span>
+          <span className={`text-white xs:text-[13px] sm:text-[15px] border-0 ${pathName==='/stats' && `xs:border-b-2 p-1 border-white`} `}>Stats</span>
           </Link>
         
         </div>

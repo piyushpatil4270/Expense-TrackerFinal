@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
-const Payment_form = () => {
+const Payment_form = ({setPremium}) => {
     const [formData,setFormdata]=useState({
         txnid:"",
         amount: '100',
@@ -10,6 +11,7 @@ const Payment_form = () => {
         email: '',
         phone: ''
     })
+    const navigate=useNavigate()
     const handleChange=(e)=>{
         setFormdata({...formData,[e.target.name]:e.target.value})
     }
@@ -29,7 +31,11 @@ const Payment_form = () => {
             if(payUResponse.status===200){
               const userToken=localStorage.getItem("token")
               const res=await axios.post("http://localhost:5500/premium/add",{},{headers:{"Authorization":userToken}})
-              if(res.status===202)alert("You are a premium user now")
+              if(res.status===202){
+                alert("You are a premium user now")
+                setPremium(true)
+                navigate("/daily")
+              }
               else alert("Try again")
             }
            else alert(`${payUResponse.data.message}`);

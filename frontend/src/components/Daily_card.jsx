@@ -6,7 +6,7 @@ const Daily_card= ({title,description}) => {
   return (
     <div className="flex flex-col items-center justify-center gap-[2px]">
                   <div className="flex items-center justify-center gap-5">
-                    <span className="mx-[2px] text-black xs:text-[12px] sm:text-[15px]">
+                    <span className="mx-[2px] font-normal text-black xs:text-[12px] sm:text-[15px]">
                       {title}
                     </span>
                     {!showDesc ?(<ArrowCircleDownIcon
@@ -20,7 +20,7 @@ const Daily_card= ({title,description}) => {
                     />)}
                   </div>
                   {showDesc && <div className="flex  items-start justify-start mt-[2px] w-full">
-                    <span className="text-[12px] mx-[2px]">{description}</span>
+                    <span className=" xs:text-[10px] sm:text-[12px] mx-[2px]">{description}</span>
                   </div>}
                 </div>
   )
