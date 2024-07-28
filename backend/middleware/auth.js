@@ -18,6 +18,7 @@ const authenticate=async(req,res,next)=>{
         .catch((err)=>{throw new Error(err)})
      
     } catch (error) {
+        console.log(error)
         return res.status(404).json({success:false})
     }
 }

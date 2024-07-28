@@ -3,6 +3,7 @@ const express=require("express")
 const router=express.Router()
 const Users=require("../models/Users")
 const authenticate=require("../middleware/auth")
+const sequelize = require("../utils/db")
 
 
 
@@ -19,6 +20,31 @@ router.post("/add",authenticate,async(req,res,next)=>{
     
 })
 
+
+router.get("/user",authenticate,async(req,res,next)=>{
+    try {
+        console.log("user url hitted")
+        const userId=req.user.id
+        const user=await Users.findByPk(userId)
+        res.status(202).json(user)
+    } catch (error) {
+        res.status(404).json(error)
+    }
+})
+
+
+router.get("/leaderboard",async(req,res,next)=>{
+    try {
+        const  [result,metadata]=await sequelize.query(`SELECT Users.email, SUM(Expenses.amount) AS total_expense
+        FROM Users
+        JOIN Expenses ON Users.id = Expenses.userId
+        GROUP BY Users.email
+        ORDER BY total_expense DESC`)
+        res.status(202).json(result)
+    } catch (error) {
+        res.status(404).json(error)
+    }
+})
 
 
 
