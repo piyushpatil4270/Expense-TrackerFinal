@@ -23,6 +23,10 @@ const Users = sequelize.define("Users", {
   password:{
     type:Sequelize.STRING,
     allowNull:false
+  },
+  totalExpenses:{
+    type:Sequelize.INTEGER,
+    defaultValue:0
   }
 },{
   timestamps:false

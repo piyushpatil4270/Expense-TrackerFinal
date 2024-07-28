@@ -38,14 +38,10 @@ router.get("/leaderboard",async(req,res,next)=>{
     try {
         const leaderboard=await Users.findAll({
             attributes:[
-                'id','email',[sequelize.fn('SUM',sequelize.col('Expense.amount')),'total_expense']
+                'id','email','totalExpenses'
             ],
-            include:[{
-                model:Expenses,
-                attributes:[]
-            }],
-            group:['Users.id'],
-            order:[[sequelize.literal('total_expense'),'DESC']]
+            
+            order:[['totalExpenses','DESC']]
         })
         res.status(202).json(leaderboard)
     } catch (error) {
