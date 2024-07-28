@@ -4,6 +4,7 @@ const router=express.Router()
 const Users=require("../models/Users")
 const authenticate=require("../middleware/auth")
 const sequelize = require("../utils/db")
+const Expenses = require("../models/Expenses")
 
 
 
@@ -35,12 +36,18 @@ router.get("/user",authenticate,async(req,res,next)=>{
 
 router.get("/leaderboard",async(req,res,next)=>{
     try {
-        const  [result,metadata]=await sequelize.query(`SELECT Users.email, SUM(Expenses.amount) AS total_expense
-        FROM Users
-        JOIN Expenses ON Users.id = Expenses.userId
-        GROUP BY Users.email
-        ORDER BY total_expense DESC`)
-        res.status(202).json(result)
+        const leaderboard=await Users.findAll({
+            attributes:[
+                'id','email',[sequelize.fn('SUM',sequelize.col('Expense.amount')),'total_expense']
+            ],
+            include:[{
+                model:Expenses,
+                attributes:[]
+            }],
+            group:['Users.id'],
+            order:[[sequelize.literal('total_expense'),'DESC']]
+        })
+        res.status(202).json(leaderboard)
     } catch (error) {
         res.status(404).json(error)
     }
