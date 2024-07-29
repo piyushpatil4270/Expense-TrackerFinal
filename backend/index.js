@@ -11,6 +11,7 @@ const Reset_req=require("./models/ResetReq")
 const crypto = require("crypto");
 const bodyParser = require("body-parser");
 const path = require("path");
+const ResetPass_Router=require("./routes/reset")
 
 
 const app = express();
@@ -98,16 +99,9 @@ app.post("/failure", (req, res) => {
   res.json("Payment failed");
 });
 
-app.get("/reset_password/:id",async(req,res,next)=>{
-  const {id}=req.params
-  const resetReq=await Reset_req.findByPk(id)
-  if(resetReq && resetReq.isActive){
-   return  res.render("email",{id})
-  }
-  res.render("error")
 
-})
 
+app.use("/password",ResetPass_Router)
 app.use("/auth", AuthRouter);
 app.use("/expense", ExpenseRouter);
 app.use("/premium",PremiumRouter)

@@ -10,6 +10,7 @@ const Request = require("../models/ResetReq");
 
 
 
+
 const transporter=nodemailer.createTransport({
     service:"gmail",
     auth:{
@@ -91,7 +92,7 @@ router.post("/forgot_password", async (req, res, next) => {
           <title>Document</title>
         </head>
         <body>
-          <a href="http://localhost:5500/reset_password/${uId}">Reset Password</a>
+          <a href="http://localhost:5500/password/reset_password/${uId}">Reset Password</a>
         </body>
       </html>`
    }
@@ -132,6 +133,10 @@ router.post("/reset/:id",async(req,res)=>{
       {where:{email:email}}
     )
     if(update){
+    await Reset_req.udate(
+      {isActive:false},
+      {where:{id:id}}
+    )
     return res.send("Password updated succesfully")
     }
     res.send("There was error updating password")
