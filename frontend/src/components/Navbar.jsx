@@ -13,7 +13,10 @@ const Navbar = ({isPremium,setPremium}) => {
       setLoading(true)
       console.log(res.data)
       setLoading(false)
-      if(res?.data?.isPremium)setPremium(true)
+      if(res?.data?.isPremium){
+        setPremium(true)
+        
+      }
     } catch (error) {
       console.log(error)
     }

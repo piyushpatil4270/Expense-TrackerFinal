@@ -1,8 +1,9 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import html2Canvas from "html2canvas"
 import jsPdf from "jspdf"
 
 const ExpenseTable = () => {
+    const [isPremium,setPremium]=useState(false)
   const expenses = [
     {
       title: "Groceries",
@@ -52,10 +53,14 @@ const ExpenseTable = () => {
         const imgData=canvas.toDataURL('image/png')
         const pdf=new jsPdf()
         pdf.addImage(imgData,'PNG',0,0)
-        pdf.save(`expenses${i}.pdf`)
-        i++
+        pdf.save(`expenses.pdf`)
+        
     })
   }
+  useEffect(()=>{
+    const premiumUser=localStorage.getItem("premium")
+    if(premiumUser)setPremium(true)
+  },[])
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -83,7 +88,7 @@ const ExpenseTable = () => {
           ))}
         </tbody>
       </table>
-      <button className="p-[2px] xs:text-[12px] sm:text-[15px] bg-green-500 text-white " onClick={downLoad1}>Download</button>
+      {isPremium && <button className="p-[2px] my-2 xs:text-[12px] sm:text-[15px] bg-green-500 text-white " onClick={downLoad1}>Download</button>}
       </div>
       <div className="w-full flex flex-col justify-center items-center p-2">
       <h2 className="p-2 xs:text-[13px] sm:text-[15px] font-semibold">Yearly Expense Summary</h2>
@@ -107,7 +112,7 @@ const ExpenseTable = () => {
           ))}
         </tbody>
       </table>
-      <button className="p-[2px] xs:text-[12px] sm:text-[15px] bg-green-500 text-white " onClick={downLoad2}>Download</button>
+     {isPremium && <button className="p-[2px] my-2 xs:text-[12px] sm:text-[15px] bg-green-500 text-white " onClick={downLoad2}>Download</button>}
       </div>
       
       

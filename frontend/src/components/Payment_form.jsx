@@ -34,6 +34,7 @@ const Payment_form = ({setPremium}) => {
               if(res.status===202){
                 alert("You are a premium user now")
                 setPremium(true)
+                localStorage.setItem("premium",true)
                 navigate("/daily")
               }
               else alert("Try again")

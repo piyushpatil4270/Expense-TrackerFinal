@@ -16,6 +16,10 @@ const Income = () => {
   const [amount, setAmount] = useState("");
   const [data, setData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(moment().utc().toDate());
+  const [currPage,setCurrPage]=useState(1)
+  const [totalPages,setTotalpages]=useState(1)
+
+  const itemsPerPage=5
 
   const handleExpense = async () => {
     try {
@@ -63,11 +67,17 @@ const Income = () => {
     try {
       const userToken = localStorage.getItem("token");
       const res = await axios.post("http://localhost:5500/expense/all",{
-        date:selectedDate
+        date:selectedDate,
+        limit:itemsPerPage,
+        page:currPage
       },{
         headers: { Authorization: userToken },
       });
-      setData(res.data);
+      if(res.data?.expenses){
+        setData(res.data.expenses)
+      }
+      setTotalpages(Math.ceil(res.data.total/itemsPerPage))
+      
     } catch (error) {
       console.log(error);
     }
@@ -76,7 +86,7 @@ const Income = () => {
   useEffect(() => {
     fetchExpenses();
     console.log("The current date is ",selectedDate)
-  }, [selectedDate]);
+  }, [selectedDate,currPage]);
 
   return (
     <div className="w-full h-full flex flex-col gap-4 mt-2 justify-center items-center hide-scrollbar">
@@ -208,6 +218,20 @@ const Income = () => {
           Add Expense
         </button>
       )}
+      <div className="w-full flex justify-between items-center">
+     <button className={`m-5 p-[2px] text-[14px] rounded-sm ${currPage>1?'bg-black':'bg-slate-400'}  text-white`}  onClick={()=>{
+      if(currPage>1){
+        setCurrPage(currPage-1)
+      }
+     }}>Prev</button>
+      <button  className={`m-5 p-[2px] text-[14px] rounded-sm ${currPage<totalPages?"bg-black":"bg-slate-400"} text-white`}
+      onClick={()=>{
+        if(currPage<totalPages){
+          setCurrPage(currPage+1)
+        }
+      }}
+      >Next</button>
+      </div>
     </div>
   );
 };

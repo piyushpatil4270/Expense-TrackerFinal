@@ -43,22 +43,28 @@ router.post("/add", authenticate, async (req, res, next) => {
 
 router.post("/all", authenticate, async (req, res, next) => {
   try {
-    const { date } = req.body;
-    const userId = req.user.id;
+    const { date,limit,page } = req.body;
+    const userId =req.user.id;
+    const skip=(page-1)*limit
 
     const startOfDay = moment.utc(date).startOf("day").toDate();
-    const endOfDay = moment.utc(date).endOf("day").toDate();
-    const allExpenses = await Expenses.findAll({
+    const endOfDay = moment.utc(date).add(1,'day').startOf('day').toDate();
+    console.log("Daily ",startOfDay," ",endOfDay)
+   
+    const {count,rows} = await Expenses.findAndCountAll({
       where: {
         userId: userId,
         date: {
           [Sequelize.Op.between]: [startOfDay, endOfDay],
         },
       },
+      limit:parseInt(limit),
+      offset:parseInt(skip)
     });
-
-    res.status(202).json(allExpenses);
+    console.log("count is ",count," expenses ",rows)
+    res.status(202).json({expenses:rows,total:count});
   } catch (error) {
+    console.log(error)
     res.status(404).json(error);
   }
 });
@@ -95,8 +101,8 @@ router.post("/getbyMonth", authenticate, async (req, res, next) => {
     const { month: date } = req.body;
     const userId = req.user.id;
     console.log("The date is ", date);
-    const startMonth = moment.utc(date).startOf("month").toDate();
-    const endMonth = moment.utc(date).add(1, "month").startOf("month").toDate();
+    const startMonth = moment.utc(date).startOf("month").format("YYYY-MM-DD");
+    const endMonth = moment.utc(date).add(1, "month").startOf("month").format("YYYY-MM-DD");
     console.log("start-month ", startMonth, "  ", "end-month ", endMonth);
 
     const expenses=await Expenses.findAll({
