@@ -40,8 +40,11 @@ const SignUp = ({setIsAuth}) => {
         <div className='w-auto xs:p-1 xs:m-1  sm:p-2 sm:m-2 gap-2 flex items-center justify-center'>
             <button className='text-[14px] bg-cyan-300 p-[4px] rounded-sm text-white' onClick={handleLogin}>Sign-Up</button>
             <a href='/signin' className='border-0 border-b-[1px] text-[14px] p-1 border-blue-700'>Sign-In</a>
+           
         </div>
-   
+        <div className='w-auto xs:p-1 xs:m-1  sm:p-2 sm:m-2 gap-2 flex items-center justify-center'>
+        <a href='/forgot' className='border-0 border-b-[1px] text-[14px] p-1 border-blue-700'>Forgot Password</a>
+       </div>
     </div>
     </div>
   )

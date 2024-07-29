@@ -24,6 +24,11 @@ const Expenses=sequelize.define("Expenses",{
         type:Sequelize.INTEGER,
         allowNull:false
     },
+    date: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW
+    },
     category:Sequelize.STRING
 },
 {

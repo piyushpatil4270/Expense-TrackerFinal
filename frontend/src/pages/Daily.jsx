@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "../App.css";
 import axios from "axios";
-
+import "./styles/Calendar.css"
 import Daily_card from "../components/Daily_card";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import Calender from "../components/Calender";
+import moment from "moment";
 
 const Income = () => {
   const [addExp, setaddExp] = useState(false);
@@ -13,7 +15,7 @@ const Income = () => {
   const [details, setDetails] = useState("");
   const [amount, setAmount] = useState("");
   const [data, setData] = useState([]);
-  const [showDesc,setShowdesc]=useState(false)
+  const [selectedDate, setSelectedDate] = useState(moment().utc().toDate());
 
   const handleExpense = async () => {
     try {
@@ -30,6 +32,7 @@ const Income = () => {
           amount: amount,
           title: title,
           description: details,
+          date:selectedDate
         },
         { headers: { Authorization: userToken } }
       );
@@ -40,21 +43,28 @@ const Income = () => {
   };
 
   const handleDelete = async (id) => {
-    const userToken = localStorage.getItem("token");
-    const res = await axios.post(
-      `http://localhost:5500/expense/delete/${id}`,
+    try {
+      const userToken = localStorage.getItem("token");
+      const res = await axios.post(
+        `http://localhost:5500/expense/delete/${id}`,
       {},
-      {
-        headers: { Authorization: userToken },
-      }
-    );
-    fetchExpenses();
+        {
+          headers: { Authorization: userToken },
+        }
+      );
+      fetchExpenses();
+    } catch (error) {
+      console.log(error)
+    }
+   
   };
 
   const fetchExpenses = async () => {
     try {
       const userToken = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5500/expense/all", {
+      const res = await axios.post("http://localhost:5500/expense/all",{
+        date:selectedDate
+      },{
         headers: { Authorization: userToken },
       });
       setData(res.data);
@@ -65,10 +75,13 @@ const Income = () => {
 
   useEffect(() => {
     fetchExpenses();
-  }, []);
+    console.log("The current date is ",selectedDate)
+  }, [selectedDate]);
 
   return (
     <div className="w-full h-full flex flex-col gap-4 mt-2 justify-center items-center hide-scrollbar">
+      {/*showCal?<Calender onClick={()=>setShowCal(!showCal)}/>:<span className="text-black p-2" onClick={()=>setShowCal(!showCal)}>Choose Date</span>*/}
+      <Calender selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
       <div className="flex flex-col items-center w-full px-4 py-4 gap-4">
         <div className="w-full flex justify-between bg-slate-300">
           <span className="m-1 text-black xs:text-[14px] sm:text-[18px]">
