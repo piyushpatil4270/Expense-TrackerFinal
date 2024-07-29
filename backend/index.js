@@ -27,7 +27,7 @@ const key = "4qVKdt";
 const salt = "EkDHiiSmyzFM36MoRCdG16hrAMaymo7w";
 
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 
 sequelize
@@ -101,10 +101,10 @@ app.post("/failure", (req, res) => {
 app.get("/reset_password/:id",async(req,res,next)=>{
   const {id}=req.params
   const resetReq=await Reset_req.findByPk(id)
-  if(resetReq.isActive){
-   return  res.sendFile("email",{id})
+  if(resetReq && resetReq.isActive){
+   return  res.render("email",{id})
   }
-  res.sendFile("error")
+  res.render("error")
 
 })
 

@@ -9,6 +9,7 @@ const {v4:uuidv4}=require("uuid");
 const Request = require("../models/ResetReq");
 
 
+
 const transporter=nodemailer.createTransport({
     service:"gmail",
     auth:{
@@ -83,16 +84,16 @@ router.post("/forgot_password", async (req, res, next) => {
     subject:"Reset email ",
     text:"Successfully retrieve to old password",
     html:`<!DOCTYPE html>
-   <html lang="en">
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-   </head>
-   <body>
-    <a href="http:localhost:5500/reset_password/${uId}"/>
-  </body>
-  </html>`
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Document</title>
+        </head>
+        <body>
+          <a href="http://localhost:5500/reset_password/${uId}">Reset Password</a>
+        </body>
+      </html>`
    }
  
     transporter.sendMail(mailOptions,(err,info)=>{
@@ -110,15 +111,31 @@ router.post("/forgot_password", async (req, res, next) => {
 });
 
 
-router.post("/auth/reset/:id",async(req,res)=>{
+router.post("/reset/:id",async(req,res)=>{
   try {
     const {id}=req.params
+    console.log("Url hitted")
+    const {email,password}=req.body
     
     const Reset_req=await Request.findOne({where:{id:id}})
     if(!Reset_req){
-      res.send("Request doesnt exist")
+     return res.send("Request doesnt exist")
     }
-    res.send(req.body)
+    const user=await Users.findOne({where:{email:email}})
+    if(!user){
+      return res.send("User doesnt exist")
+
+    }
+    const hasdhedPass=await bcrypt.hash(password,saltRounds)
+   const update= await Users.update(
+      {password:hasdhedPass},
+      {where:{email:email}}
+    )
+    if(update){
+    return res.send("Password updated succesfully")
+    }
+    res.send("There was error updating password")
+    
   } catch (error) {
     console.log("Error resetting password ",error)
     res.status(404).json("Error")
