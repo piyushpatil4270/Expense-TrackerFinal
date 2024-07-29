@@ -4,13 +4,19 @@ const bcrypt = require("bcrypt");
 const router = express.Router();
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
-const Sib = require("sib-api-v3-sdk");
-require("dotenv").config()
+const nodemailer=require("nodemailer")
+const {v4:uuidv4}=require("uuid");
+const Request = require("../models/ResetReq");
 
 
-const client = Sib.ApiClient.instance;
-const apiKey = client.authentications["api-key"];
-apiKey.apiKey =process.env.API_KEY
+const transporter=nodemailer.createTransport({
+    service:"gmail",
+    auth:{
+        user: 'piyushpatil4270@gmail.com',
+        pass: 'uwzocqrsvibhjans' 
+    }
+})
+
 
 function generateToken(id) {
   const token = jwt.sign({ userId: id }, "fskhkahkk88245fafjklakljfalk");
@@ -58,39 +64,65 @@ router.post("/login", async (req, res, next) => {
 
 router.post("/forgot_password", async (req, res, next) => {
   try {
-    const { email } = req.body;
-    console.log("email is ",email)
-    const tranEmailApi = new Sib.TransactionalEmailsApi();
-
-    const sender = {
-      email: "piyushpatil4270@gmail.com",
-    };
-
-    const receivers = [
-      {
-        email:email,
-      },
-    ];
-
-    tranEmailApi
-      .sendTransacEmail({
-        sender,
-        to: receivers,
-        subject: "Random subject ",
-        textContent: "hello world",
-      })
-      .then(() => {
-        console.log(`Email sent to ${email} succesfully`)
-        res.status(202).json("email sent succesfully")
-    })
-      .catch((err) => {
+   const {email}=req.body
+   const user=await Users.findOne({where:{email:email}})
+   if(!user){
+    return res.status(404).json("User with email doesnt exist")
+   }
+   const userId=user.id
+   const uId=uuidv4()
+   const reset_req=await Request.create({
+    id:uId,
+    isActive:true,
+    userId:userId
+   })
+   
+   const mailOptions={
+    from:'piyushpatil4270@gmail.com',
+    to:email,
+    subject:"Reset email ",
+    text:"Successfully retrieve to old password",
+    html:`<!DOCTYPE html>
+   <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+   </head>
+   <body>
+    <a href="http:localhost:5500/reset_password/${uId}"/>
+  </body>
+  </html>`
+   }
+ 
+    transporter.sendMail(mailOptions,(err,info)=>{
+      if(err){
         console.log(err)
-        res.status(404).json(err)
-    });
-     
-  } catch (error) {
+        return
+      }
+      console.log(info)
+    })
+    res.status(202).json(`Mail sent to ${email} successfully`)
+   } catch (error) {
+    console.log(error)
     res.status(404).json(error);
   }
 });
+
+
+router.post("/auth/reset/:id",async(req,res)=>{
+  try {
+    const {id}=req.params
+    
+    const Reset_req=await Request.findOne({where:{id:id}})
+    if(!Reset_req){
+      res.send("Request doesnt exist")
+    }
+    res.send(req.body)
+  } catch (error) {
+    console.log("Error resetting password ",error)
+    res.status(404).json("Error")
+  }
+})
 
 module.exports = router;

@@ -7,6 +7,7 @@ const Resend_Form  = () => {
     const sendForm=async()=>{
         try {
             const res=axios.post("http://localhost:5500/auth/forgot_password",{email:email})
+            
         } catch (error) {
             console.log(error)
         }

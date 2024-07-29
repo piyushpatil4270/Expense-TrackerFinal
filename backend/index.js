@@ -7,13 +7,21 @@ const Users = require("./models/Users");
 const Expenses = require("./models/Expenses");
 const ExpenseRouter = require("./routes/expense");
 const PremiumRouter=require("../backend/routes/premium")
+const Reset_req=require("./models/ResetReq")
 const crypto = require("crypto");
 const bodyParser = require("body-parser");
+const path = require("path");
+
 
 const app = express();
 const server = http.createServer(app);
 
 Users.hasOne(Expenses, { foreignKey: "userId" });
+Users.hasMany(Reset_req,{foreignKey:"userId"})
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 
 const key = "4qVKdt";
 const salt = "EkDHiiSmyzFM36MoRCdG16hrAMaymo7w";
@@ -89,6 +97,17 @@ app.post("/success", (req, res) => {
 app.post("/failure", (req, res) => {
   res.json("Payment failed");
 });
+
+app.get("/reset_password/:id",async(req,res,next)=>{
+  const {id}=req.params
+  const resetReq=await Reset_req.findByPk(id)
+  if(resetReq.isActive){
+   return  res.sendFile("email",{id})
+  }
+  res.sendFile("error")
+
+})
+
 app.use("/auth", AuthRouter);
 app.use("/expense", ExpenseRouter);
 app.use("/premium",PremiumRouter)
