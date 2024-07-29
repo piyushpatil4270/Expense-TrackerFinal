@@ -5,7 +5,7 @@ const router = express.Router();
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 const Sib = require("sib-api-v3-sdk");
-require("dotenv").config();
+
 
 const client = Sib.ApiClient.instance;
 const apiKey = client.authentications["api-key"];
