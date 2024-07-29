@@ -98,25 +98,27 @@ router.post("/delete/:id", authenticate, async (req, res, next) => {
 
 router.post("/getbyMonth", authenticate, async (req, res, next) => {
   try {
-    const { month: date } = req.body;
+    const { month: date,limit,page } = req.body;
     const userId = req.user.id;
     console.log("The date is ", date);
     const startMonth = moment.utc(date).startOf("month").format("YYYY-MM-DD");
     const endMonth = moment.utc(date).add(1, "month").startOf("month").format("YYYY-MM-DD");
     console.log("start-month ", startMonth, "  ", "end-month ", endMonth);
-
-    const expenses=await Expenses.findAll({
+    const skip=(page-1)*limit
+    const {rows,count}=await Expenses.findAndCountAll({
         where:{
             userId:userId,
             date:{
                 [Sequelize.Op.between]:[startMonth,endMonth]
             }
         },
+        limit:parseInt(limit),
+        offset:parseInt(skip),
        order:[literal('DATE(date)')]
     })
 
   
-    res.status(202).json(expenses);
+    res.status(202).json({expenses:rows,total:count});
   } catch (error) {
     console.log(error);
     res.status(404).json(error);

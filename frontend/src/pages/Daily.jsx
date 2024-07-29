@@ -219,12 +219,12 @@ const Income = () => {
         </button>
       )}
       <div className="w-full flex justify-between items-center">
-     <button className={`m-5 p-[2px] text-[14px] rounded-sm ${currPage>1?'bg-black':'bg-slate-400'}  text-white`}  onClick={()=>{
+     <button className={`m-5 p-[4px] text-[14px] rounded-sm ${currPage>1?'bg-black':'bg-slate-400'}  text-white`}  onClick={()=>{
       if(currPage>1){
         setCurrPage(currPage-1)
       }
      }}>Prev</button>
-      <button  className={`m-5 p-[2px] text-[14px] rounded-sm ${currPage<totalPages?"bg-black":"bg-slate-400"} text-white`}
+      <button  className={`m-5 p-[4px] text-[14px] rounded-sm ${currPage<totalPages?"bg-black":"bg-slate-400"} text-white`}
       onClick={()=>{
         if(currPage<totalPages){
           setCurrPage(currPage+1)
