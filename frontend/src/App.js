@@ -10,6 +10,7 @@ import Yearly from "./pages/Yearly";
 import Payment_form from "./components/Payment_form";
 import Stats_Page from "./pages/Stats_Page";
 import Resend_Form from "./components/Resend_Form ";
+import Summary from "./pages/Summary";
 function App() {
   const [isAuth,setIsAuth]=useState(false)
   const [isPremium,setPremium]=useState(false)
@@ -29,6 +30,7 @@ function App() {
               <Route path="/yearly" element={<Yearly />} />
               <Route path="/premium" element={<Payment_form  isPremium={isPremium} setPremium={setPremium}/> } />
               <Route path="/stats" element={<Stats_Page/>} />
+              <Route path="/summary"  element={<Summary/>}  />
             </Routes>
           </div>
         </>

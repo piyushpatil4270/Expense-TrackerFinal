@@ -133,7 +133,7 @@ router.post("/reset/:id",async(req,res)=>{
       {where:{email:email}}
     )
     if(update){
-    await Reset_req.udate(
+    await Reset_req.update(
       {isActive:false},
       {where:{id:id}}
     )

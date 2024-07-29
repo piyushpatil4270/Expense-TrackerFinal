@@ -49,7 +49,9 @@ const Navbar = ({isPremium,setPremium}) => {
          <Link to={"/stats"}>
           <span className={`text-white xs:text-[13px] sm:text-[15px] border-0 ${pathName==='/stats' && `xs:border-b-2 p-1 border-white`} `}>Stats</span>
           </Link>
-        
+          <Link to={"/summary"}>
+          <span className={`text-white xs:text-[13px] sm:text-[15px] border-0 ${pathName==='/summary' && `xs:border-b-2 p-1 border-white`} `}>Summary</span>
+          </Link>
         </div>
       
     </div>
