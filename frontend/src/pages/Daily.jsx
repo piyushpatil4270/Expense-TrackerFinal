@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "../App.css";
 import axios from "axios";
-import "./styles/Calendar.css"
+import "./styles/Calendar.css";
 import Daily_card from "../components/Daily_card";
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import Calender from "../components/Calender";
 import moment from "moment";
 
@@ -16,10 +16,11 @@ const Income = () => {
   const [amount, setAmount] = useState("");
   const [data, setData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(moment().utc().toDate());
-  const [currPage,setCurrPage]=useState(1)
-  const [totalPages,setTotalpages]=useState(1)
-
-  const itemsPerPage=5
+  const [currPage, setCurrPage] = useState(1);
+  const [totalPages, setTotalpages] = useState(1);
+  
+  const [itemsPerPage,setItemsPerPage]=useState(5)
+  
 
   const handleExpense = async () => {
     try {
@@ -36,7 +37,7 @@ const Income = () => {
           amount: amount,
           title: title,
           description: details,
-          date:selectedDate
+          date: selectedDate,
         },
         { headers: { Authorization: userToken } }
       );
@@ -51,47 +52,79 @@ const Income = () => {
       const userToken = localStorage.getItem("token");
       const res = await axios.post(
         `http://localhost:5500/expense/delete/${id}`,
-      {},
+        {},
         {
           headers: { Authorization: userToken },
         }
       );
       fetchExpenses();
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-   
   };
+
+  const handleItemsCount=(e)=>{
+    const items=parseInt(e.target.value)
+    setItemsPerPage(parseInt(items))
+    console.log("value is ",items)
+   
+    
+    setCurrPage(1)
+  }
 
   const fetchExpenses = async () => {
     try {
       const userToken = localStorage.getItem("token");
-      const res = await axios.post("http://localhost:5500/expense/all",{
-        date:selectedDate,
-        limit:itemsPerPage,
-        page:currPage
-      },{
-        headers: { Authorization: userToken },
-      });
-      if(res.data?.expenses){
-        setData(res.data.expenses)
+      const res = await axios.post(
+        "http://localhost:5500/expense/all",
+        {
+          date: selectedDate,
+          limit: itemsPerPage,
+          page: currPage,
+        },
+        {
+          headers: { Authorization: userToken },
+        }
+      );
+      if (res.data?.expenses) {
+        setData(res.data.expenses);
       }
-      setTotalpages(Math.ceil(res.data.total/itemsPerPage))
-      
+      setTotalpages(Math.ceil(res.data.total / itemsPerPage));
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
+    localStorage.removeItem("perpage")
+    localStorage.setItem("perpage",itemsPerPage)
     fetchExpenses();
-    console.log("The current date is ",selectedDate)
-  }, [selectedDate,currPage]);
+    console.log("The current date is ", selectedDate);
+  }, [selectedDate, currPage,itemsPerPage]);
 
   return (
     <div className="w-full h-full flex flex-col gap-4 mt-2 justify-center items-center hide-scrollbar">
       {/*showCal?<Calender onClick={()=>setShowCal(!showCal)}/>:<span className="text-black p-2" onClick={()=>setShowCal(!showCal)}>Choose Date</span>*/}
-      <Calender selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+      <div className="flex justify-between items-center p-2 w-full">
+        <div className="flex justify-center items-center w-[90%]">
+        <Calender
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+        />
+        </div>
+        
+        <div class="xs:p-1 sm:p-4 flex items-center gap-2 justify-between">
+          <span className="text-[12px]">Rows Per Page</span>
+          <select class="bg-white border border-gray-300 text-gray-700 py-1 px-1  rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500 xs:text-[12px] sm:text-[16px]" onChange={handleItemsCount}>
+            <option value="5" >5</option>
+            <option value="10" >10</option>
+            <option value="15" >15</option>
+            <option value="20"  >20</option>
+            <option value="25" >25</option>
+          </select>
+        </div>
+      </div>
+
       <div className="flex flex-col items-center w-full px-4 py-4 gap-4">
         <div className="w-full flex justify-between bg-slate-300">
           <span className="m-1 text-black xs:text-[14px] sm:text-[18px]">
@@ -105,14 +138,20 @@ const Income = () => {
           data?.map((expense) => {
             return (
               <div className="w-full flex justify-between ">
-                <Daily_card title={expense.title} description={expense.description} />
+                <Daily_card
+                  title={expense.title}
+                  description={expense.description}
+                />
 
                 <div className="flex gap-5 items-center">
                   <span className="mx-2 text-black xs:text-[12px] sm:text-[15px]">
                     ${expense.amount}
                   </span>
-                  <DeleteOutlineIcon  fontSize="5" style={{marginLeft:"8px",marginRight:'8px'}} onClick={() => handleDelete(expense.id)} />
-                  
+                  <DeleteOutlineIcon
+                    fontSize="5"
+                    style={{ marginLeft: "8px", marginRight: "8px" }}
+                    onClick={() => handleDelete(expense.id)}
+                  />
                 </div>
               </div>
             );
@@ -219,18 +258,30 @@ const Income = () => {
         </button>
       )}
       <div className="w-full flex justify-between items-center">
-     <button className={`m-5 p-[4px] text-[14px] rounded-sm ${currPage>1?'bg-black':'bg-slate-400'}  text-white`}  onClick={()=>{
-      if(currPage>1){
-        setCurrPage(currPage-1)
-      }
-     }}>Prev</button>
-      <button  className={`m-5 p-[4px] text-[14px] rounded-sm ${currPage<totalPages?"bg-black":"bg-slate-400"} text-white`}
-      onClick={()=>{
-        if(currPage<totalPages){
-          setCurrPage(currPage+1)
-        }
-      }}
-      >Next</button>
+        <button
+          className={`m-5 p-[4px] text-[14px] rounded-sm ${
+            currPage > 1 ? "bg-black" : "bg-slate-400"
+          }  text-white`}
+          onClick={() => {
+            if (currPage > 1) {
+              setCurrPage(currPage - 1);
+            }
+          }}
+        >
+          Prev
+        </button>
+        <button
+          className={`m-5 p-[4px] text-[14px] rounded-sm ${
+            currPage < totalPages ? "bg-black" : "bg-slate-400"
+          } text-white`}
+          onClick={() => {
+            if (currPage < totalPages) {
+              setCurrPage(currPage + 1);
+            }
+          }}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
