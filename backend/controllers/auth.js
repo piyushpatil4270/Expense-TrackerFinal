@@ -1,6 +1,5 @@
 const Users = require("../models/Users");
 const bcrypt = require("bcrypt");
-const router = express.Router();
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 const nodemailer=require("nodemailer")

@@ -17,6 +17,7 @@ const morgan=require("morgan")
 const fs=require("fs")
 const app = express();
 const server = http.createServer(app);
+require("dotenv").config()
 
 Users.hasOne(Expenses, { foreignKey: "userId" });
 Users.hasMany(Reset_req,{foreignKey:"userId"})
@@ -113,4 +114,4 @@ app.use("/auth", AuthRouter);
 app.use("/expense", ExpenseRouter);
 app.use("/premium",PremiumRouter)
 
-server.listen(process.env.PORT_NO||5000, () => console.log(`Server started on port ${process.env.PORT_NO||5000}`));
+server.listen(process.env.PORT_NO||5500, () => console.log(`Server started on port ${process.env.PORT_NO ||5500}`));
