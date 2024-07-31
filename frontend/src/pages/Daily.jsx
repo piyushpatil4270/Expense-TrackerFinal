@@ -18,6 +18,7 @@ const Income = () => {
   const [selectedDate, setSelectedDate] = useState(moment().utc().toDate());
   const [currPage, setCurrPage] = useState(1);
   const [totalPages, setTotalpages] = useState(1);
+  const [totalAmt,setTotalAmt]=useState(0)
   
   const [itemsPerPage,setItemsPerPage]=useState(5)
   
@@ -90,6 +91,8 @@ const Income = () => {
         setData(res.data.expenses);
       }
       setTotalpages(Math.ceil(res.data.total / itemsPerPage));
+      if(res?.data?.totalAmount)setTotalAmt(res.data.totalAmount)
+      else setTotalAmt(0)
     } catch (error) {
       console.log(error);
     }
@@ -131,7 +134,7 @@ const Income = () => {
             Total Expense:
           </span>
           <span className="m-1 text-black xs:text-[14px] text-[18px]">
-            $45555
+            ${totalAmt}
           </span>
         </div>
         {data &&
@@ -159,7 +162,7 @@ const Income = () => {
         {}
       </div>
       {addExp && (
-        <div className="hide-scrollbar max-w-[90%] md:w-[50%] lg:w-[30%] rounded-lg shadow-lg bg-white p-6 mx-auto relative">
+        <div className="hide-scrollbar max-w-[90%] md:w-[50%] lg:w-[30%] rounded-lg shadow-lg bg-white p-6 mx-auto  relative">
           <button
             className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
             onClick={() => setaddExp(false)}

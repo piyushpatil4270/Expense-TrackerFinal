@@ -18,7 +18,7 @@ const Stats_Page = () => {
      fetchLeaderboard()
     },[])
   return (
-    <div className='w-full bg-[#ededed]'>
+    <div className='w-full items-center  flex flex-col xs:gap-1 sm:gap-2'>
       {data.map((user)=>{
         return(
             <Statistics user={user.email} expense={user.totalExpenses} />

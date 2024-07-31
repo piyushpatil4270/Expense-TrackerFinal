@@ -12,8 +12,9 @@ const crypto = require("crypto");
 const bodyParser = require("body-parser");
 const path = require("path");
 const ResetPass_Router=require("./routes/reset")
-
-
+const helmet=require("helmet")
+const morgan=require("morgan")
+const fs=require("fs")
 const app = express();
 const server = http.createServer(app);
 
@@ -22,19 +23,25 @@ Users.hasMany(Reset_req,{foreignKey:"userId"})
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+const accessLogStream=fs.createWriteStream(path.join(__dirname,"access.log"),{flags:"a"})
 
-
-const key = "4qVKdt";
-const salt = "EkDHiiSmyzFM36MoRCdG16hrAMaymo7w";
-
+app.use(morgan('combined',{stream:accessLogStream}))
+app.use(helmet())
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
+
 
 sequelize
   .sync()
   .then(() => console.log("Connected to the database"))
   .catch((err) => console.log(err));
+
+
+
+
+
+
 
 
 
@@ -48,9 +55,9 @@ app.post("/payu", async (req, res, next) => {
   try {
     const { txnid, amount, productinfo, firstname, email, phone } = req.body;
     console.log(req.body)
-    const hash = generateHash(key, txnid, amount, productinfo, firstname, email, salt);
+    const hash = generateHash(key, txnid, amount, productinfo, firstname, email,process.env.PAYU_SALT);
     const payuData = {
-      key: key,
+      key: process.env.PAYU_KEY,
       txnid: txnid,
       amount: amount,
       productinfo: productinfo,
@@ -74,7 +81,7 @@ app.post("/payu_response", (req, res) => {
   try {
     const { key, txnid, amount, productinfo, firstname, email, status, hash } = req.body;
     console.log("url hitted")
-    const newHash = generateHash(key, txnid, amount, productinfo, firstname, email, salt);
+    const newHash = generateHash(key, txnid, amount, productinfo, firstname, email, process.env.PAYU_SALT);
     if (newHash === hash) {
       res.status(200).json({ status: "success", message: "Payment Successful" });
     } else {
@@ -106,4 +113,4 @@ app.use("/auth", AuthRouter);
 app.use("/expense", ExpenseRouter);
 app.use("/premium",PremiumRouter)
 
-server.listen(5500, () => console.log("Server started on port 5500"));
+server.listen(process.env.PORT_NO||5000, () => console.log(`Server started on port ${process.env.PORT_NO||5000}`));

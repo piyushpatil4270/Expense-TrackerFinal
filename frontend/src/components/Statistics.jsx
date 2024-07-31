@@ -2,7 +2,7 @@ import React from 'react'
 
 const Statistics = ({user,expense}) => {
   return (
-    <div className="p-2 w-[70%] flex justify-start items-center gap-2">
+    <div className="p-2 w-full m-2 bg-[#ededed] flex justify-start items-center gap-2">
     <div className='bg-red-600 w-5 h-5 rounded-full'>
     <span className='text-red-600 text-[2px]'>0</span>
     </div>

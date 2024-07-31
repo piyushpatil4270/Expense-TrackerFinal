@@ -20,6 +20,7 @@ const SlidingDatePicker = ({currMonth,setCurrMonth}) => {
             <span className={`text-[18px] cursor-pointer font-semibold text-black`} onClick={()=>{
                handleNextMonth()
             }}>{'>'}</span>
+            
         </div>
     );
 };
