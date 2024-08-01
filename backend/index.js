@@ -37,7 +37,7 @@ app.use(express.json());
 
 sequelize
   .sync()
-  .then(() => console.log("Connected to the database"))
+  .then(() => console.log("Connected to the database on the ec2 instance"))
   .catch((err) => console.log(err));
 
 
@@ -95,6 +95,7 @@ app.post("/payu_response", (req, res) => {
     res.status(500).json({ status: "failure", message: "Internal Server Error" });
   }
 });
+
 
 
 
