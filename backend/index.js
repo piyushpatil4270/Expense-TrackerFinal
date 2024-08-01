@@ -24,6 +24,8 @@ Users.hasMany(Reset_req,{foreignKey:"userId"})
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'frontend', 'build')));
+
 const accessLogStream=fs.createWriteStream(path.join(__dirname,"access.log"),{flags:"a"})
 
 app.use(morgan('combined',{stream:accessLogStream}))
@@ -113,5 +115,9 @@ app.use("/password",ResetPass_Router)
 app.use("/auth", AuthRouter);
 app.use("/expense", ExpenseRouter);
 app.use("/premium",PremiumRouter)
+
+app.get("*",(req,res)=>{
+  res.sendFile(path.join(__dirname,"frontend","build","index.html"))
+})
 
 server.listen(process.env.PORT_NO||5500, () => console.log(`Server started on port ${process.env.PORT_NO ||5500}`));

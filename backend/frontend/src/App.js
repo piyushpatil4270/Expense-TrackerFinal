@@ -11,6 +11,7 @@ import Payment_form from "./components/Payment_form";
 import Stats_Page from "./pages/Stats_Page";
 import Resend_Form from "./components/Resend_Form ";
 import Summary from "./pages/Summary";
+import Not_Found from "./pages/Not_Found";
 function App() {
   const [isAuth,setIsAuth]=useState(false)
   const [isPremium,setPremium]=useState(false)
@@ -31,6 +32,9 @@ function App() {
               <Route path="/premium" element={<Payment_form  isPremium={isPremium} setPremium={setPremium}/> } />
               <Route path="/stats" element={<Stats_Page/>} />
               <Route path="/summary"  element={<Summary/>}  />
+               
+           <Route path="*" element={<Not_Found/>} />
+
             </Routes>
           </div>
         </>
@@ -40,7 +44,7 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/forgot" element={<Resend_Form />} />
          
-         
+         <Route path="*" element={<Not_Found/>} />
         </Routes>
       )}
     </div>
